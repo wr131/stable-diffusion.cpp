@@ -128,9 +128,8 @@ jobs:
 
   windows-latest-cmake:
     runs-on: windows-latest
-    # https://github.com/leejet/stable-diffusion.cpp/issues/52 ggml error when using "--schedule kerras" with clblast #52
-    # Thank you very much superkuh https://github.com/leejet/stable-diffusion.cpp/issues/48#issuecomment-1869239181
-    # stable-diffusion.cpp has not add the support for OpenCL
+    
+    
     strategy:
       matrix:
         include:
