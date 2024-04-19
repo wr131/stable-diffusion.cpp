@@ -2,6 +2,8 @@
   <img src="./assets/a%20lovely%20cat.png" width="256x">
 </p>
 
+# stable-diffusion.cpp has not add the support for OpenCL
+
 # stable-diffusion.cpp
 
 Inference of [Stable Diffusion](https://github.com/CompVis/stable-diffusion) in pure C/C++
