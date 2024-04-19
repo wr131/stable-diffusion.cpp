@@ -32,6 +32,10 @@
 #include "ggml-metal.h"
 #endif
 
+#ifdef SD_OPENCL
+#include "ggml-opencl.h"
+#endif
+
 #include "rng.hpp"
 #include "util.h"
 

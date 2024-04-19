@@ -41,7 +41,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -DGGML_AVX2=ON -DSD_BUILD_SHARED_LIBS=ON -DSD_FLASH_ATT=ON
+          cmake .. -DGGML_AVX2=ON -DSD_BUILD_SHARED_LIBS=ON
           cmake --build . --config Release
 
       - name: Get commit hash
@@ -94,7 +94,7 @@ jobs:
           sysctl -a
           mkdir build
           cd build
-          cmake .. -DGGML_AVX2=ON -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DSD_BUILD_SHARED_LIBS=ON -DSD_FLASH_ATT=ON
+          cmake .. -DGGML_AVX2=ON -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DSD_BUILD_SHARED_LIBS=ON
           cmake --build . --config Release
 
       - name: Get commit hash
@@ -133,24 +133,36 @@ jobs:
       matrix:
         include:
           - build: 'noavx'
-            defines: '-DGGML_AVX=OFF -DGGML_AVX2=OFF -DGGML_FMA=OFF -DSD_BUILD_SHARED_LIBS=ON -DSD_FLASH_ATT=ON'
+            defines: '-DGGML_AVX=OFF -DGGML_AVX2=OFF -DGGML_FMA=OFF -DSD_BUILD_SHARED_LIBS=ON'
+          - build: 'noavx-opencl-clblast-and-openblas'
+            defines: '-DGGML_AVX=OFF -DGGML_AVX2=OFF -DGGML_FMA=OFF -DSD_BUILD_SHARED_LIBS=ON -DGGML_OPENBLAS=ON -DGGML_CLBLAST=ON -DCLBLAST_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\include -DCLBLAST_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\lib\clblast.lib -DOPENCL_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\include -DOPENCL_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\lib\OpenGL.lib -DOPENBLAS_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\openBlas\include -DOPENBLAS_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\openBlas\lib\libopenblas.lib'
           - build: 'avx2'
-            defines: '-DGGML_AVX2=ON -DSD_BUILD_SHARED_LIBS=ON -DSD_FLASH_ATT=ON'
+            defines: '-DGGML_AVX2=ON -DSD_BUILD_SHARED_LIBS=ON'
           - build: 'avx'
-            defines: '-DGGML_AVX2=OFF -DSD_BUILD_SHARED_LIBS=ON -DSD_FLASH_ATT=ON'
+            defines: '-DGGML_AVX2=OFF -DSD_BUILD_SHARED_LIBS=ON'
           - build: 'avx512'
-            defines: '-DGGML_AVX512=ON -DSD_BUILD_SHARED_LIBS=ON -DSD_FLASH_ATT=ON'
+            defines: '-DGGML_AVX512=ON -DSD_BUILD_SHARED_LIBS=ON'
           - build: 'cuda12'
-            defines: '-DSD_CUBLAS=ON -DSD_BUILD_SHARED_LIBS=ON -DSD_FLASH_ATT=ON'
+            defines: '-DSD_CUBLAS=ON -DSD_BUILD_SHARED_LIBS=ON'
           - build: 'rocm5.5'
-            defines: '-G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DSD_HIPBLAS=ON -DCMAKE_BUILD_TYPE=Release -DAMDGPU_TARGETS="gfx1100;gfx1102;gfx1030" -DSD_BUILD_SHARED_LIBS=ON -DSD_FLASH_ATT=ON'
+            defines: '-G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DSD_HIPBLAS=ON -DCMAKE_BUILD_TYPE=Release -DAMDGPU_TARGETS="gfx1100;gfx1102;gfx1030" -DSD_BUILD_SHARED_LIBS=ON'
     steps:
       - name: Clone
         id: checkout
         uses: actions/checkout@v3
         with:
-          submodules: recursive
-
+          submodules: recursive    
+      - name: Download and unzip OpenCL-SDK
+        id: download-and-unzip-opencl
+        run: Start-BitsTransfer -Source "https://github.com/KhronosGroup/OpenCL-SDK/releases/download/v2023.12.14/OpenCL-SDK-v2023.12.14-Win-x64.zip" -Destination "OpenCL.zip";7z x ".\OpenCL.zip" -o".\";Copy-Item ./OpenCL-SDK-v2023.12.14-Win-x64/  openCL -recurse -force 
+      - name: Download and unzip clBLAST
+        id: download-and-unzip-clblast
+        run: Start-BitsTransfer -Source "https://github.com/CNugteren/CLBlast/releases/download/1.6.2/CLBlast-1.6.2-windows-x64.zip" -Destination "clBLAST.zip";7z x ".\clBLAST.zip" -o".\";7z x ".\CLBlast-1.6.2-windows-x64.7z" -o".\";Copy-Item ./CLBlast-1.6.2-windows-x64/ clblast -recurse -force
+      - name: Download and unzip openblas
+        id: download-opencl-clblast-and-openblas
+        run: Start-BitsTransfer -Source "https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.27/OpenBLAS-0.3.27-x64.zip" -Destination "openBlas.zip";mkdir openBlas;7z x ".\openBlas.zip" -o".\openBlas"
+        
+         
       - name: Install cuda-toolkit
         id: cuda-toolkit
         if: ${{ matrix.build == 'cuda12' }}
