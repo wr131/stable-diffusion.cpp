@@ -18,6 +18,7 @@ on:
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  
 
 jobs:
   ubuntu-latest-cmake:
@@ -159,15 +160,16 @@ jobs:
           submodules: recursive    
       - name: Download and unzip OpenCL-SDK
         id: download-and-unzip-opencl
-        if: ${{ contains(matrix.build , "opencl") }}
+
+        if: ${{ contains(matrix.build , 'opencl') }}
         run: Start-BitsTransfer -Source "https://github.com/KhronosGroup/OpenCL-SDK/releases/download/v2023.12.14/OpenCL-SDK-v2023.12.14-Win-x64.zip" -Destination "OpenCL.zip";7z x ".\OpenCL.zip" -o".\";Copy-Item ./OpenCL-SDK-v2023.12.14-Win-x64/  openCL -recurse -force 
       - name: Download and unzip clBLAST
-        if: ${{ contains(matrix.build , "clblast") }}
+        if: ${{ contains(matrix.build , 'clblast') }}
         id: download-and-unzip-clblast
         run: Start-BitsTransfer -Source "https://github.com/CNugteren/CLBlast/releases/download/1.6.2/CLBlast-1.6.2-windows-x64.zip" -Destination "clBLAST.zip";7z x ".\clBLAST.zip" -o".\";7z x ".\CLBlast-1.6.2-windows-x64.7z" -o".\";Copy-Item ./CLBlast-1.6.2-windows-x64/ clblast -recurse -force
       - name: Download and unzip openblas
         id: download-opencl-clblast-and-openblas
-        if: ${{ contains(matrix.build , "openblas") }}
+        if: ${{ contains(matrix.build , 'openblas') }}
         run: Start-BitsTransfer -Source "https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.27/OpenBLAS-0.3.27-x64.zip" -Destination "openBlas.zip";mkdir openBlas;7z x ".\openBlas.zip" -o".\openBlas"
         
          
