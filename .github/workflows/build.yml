@@ -135,7 +135,7 @@ jobs:
           - build: 'noavx'
             defines: '-DGGML_AVX=OFF -DGGML_AVX2=OFF -DGGML_FMA=OFF -DSD_BUILD_SHARED_LIBS=ON'
           - build: 'noavx-opencl-clblast-and-openblas'
-            defines: '-DGGML_AVX=OFF -DGGML_AVX2=OFF -DGGML_FMA=OFF -DSD_BUILD_SHARED_LIBS=ON -DGGML_OPENBLAS=ON -DGGML_CLBLAST=ON -DCLBLAST_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\include -DCLBLAST_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\lib\clblast.lib -DOPENCL_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\include -DOPENCL_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\lib\OpenGL.lib -DOPENBLAS_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\openBlas\include -DOPENBLAS_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\openBlas\lib\libopenblas.lib'
+            defines: '-DGGML_AVX=OFF -DGGML_AVX2=OFF -DGGML_FMA=OFF -DSD_BUILD_SHARED_LIBS=ON -DGGML_OPENBLAS=ON -DGGML_CLBLAST=ON -DCLBLAST_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\include -DCLBLAST_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\lib\clblast.lib -DOPENCL_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\include -DOPENCL_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\lib\OpenCL.lib -DOPENBLAS_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\openBlas\include -DOPENBLAS_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\openBlas\lib\libopenblas.lib'
           - build: 'avx2'
             defines: '-DGGML_AVX2=ON -DSD_BUILD_SHARED_LIBS=ON'
           - build: 'avx'
