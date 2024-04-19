@@ -146,7 +146,8 @@ jobs:
             defines: '-DGGML_AVX2=OFF -DSD_BUILD_SHARED_LIBS=ON -DGGML_CLBLAST=ON'
           - build: 'avx512'
             defines: '-DGGML_AVX512=ON -DSD_BUILD_SHARED_LIBS=ON'
-          - build: 
+          - build: 'avx2' 
+            defines: '-DGGML_AVX2=ON -DSD_BUILD_SHARED_LIBS=ON'
           - build: 'cuda12'
             defines: '-DSD_CUBLAS=ON -DSD_BUILD_SHARED_LIBS=ON'
           - build: 'rocm5.5'
