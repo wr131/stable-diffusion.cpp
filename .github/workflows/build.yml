@@ -233,7 +233,7 @@ jobs:
           $vcdir = $(vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath)
           $msvc = $(join-path $vcdir $('VC\Tools\MSVC\'+$(gc -raw $(join-path $vcdir 'VC\Auxiliary\Build\Microsoft.VCToolsVersion.default.txt')).Trim()))
           $cl =  $(join-path $msvc 'bin\Hostx64\x64\cl.exe')
-          echo 'int main(void){unsigned int a[4];__cpuid(a,1);return !(a[2]&(1 << 0);}' >> tmmintrin.c
+          echo 'int main(void){unsigned int a[4];__cpuid(a,1);return a[2]&(1 << 0);}' >> tmmintrin.c
           & $cl /O2 /GS- /kernel tmmintrin.c /link /nodefaultlib /entry:main
           .\tmmintrin.exe && echo "SSE3: YES" && ( echo HAS_SSE3=1 >> $env:GITHUB_ENV ) || echo "SSE3: NO"
 
