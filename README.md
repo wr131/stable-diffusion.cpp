@@ -3,7 +3,7 @@
 </p>
 
 # stable-diffusion.cpp has not add the support for OpenCL
-
+# DO NOT USE THIS FORK, I JUST CHANGE THE BUILD SETTINGS OF SD.CPP AND GGML, I AM JUST A NEWBIE. I AM NOT A PROFESSOR OF PROGRAMING.
 # stable-diffusion.cpp
 
 Inference of [Stable Diffusion](https://github.com/CompVis/stable-diffusion) in pure C/C++
