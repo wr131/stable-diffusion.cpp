@@ -140,6 +140,11 @@ jobs:
             defines: '-DGGML_AVX=OFF -DGGML_AVX2=OFF -DGGML_FMA=OFF -DSD_BUILD_SHARED_LIBS=ON'
           - build: 'noavx-opencl-clblast-and-openblas'
             defines: '-DGGML_AVX=OFF -DGGML_AVX2=OFF -DGGML_FMA=OFF -DSD_BUILD_SHARED_LIBS=ON -DGGML_OPENBLAS=ON -DGGML_CLBLAST=ON -DCLBLAST_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\include -DCLBLAST_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\lib\clblast.lib -DOPENCL_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\include -DOPENCL_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\lib\OpenCL.lib -DOPENBLAS_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\openBlas\include -DOPENBLAS_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\openBlas\lib\libopenblas.lib'
+          - build: 'noavx-sse3-opencl-clblast-and-openblas'
+            defines: 'DCMAKE_C_FLAGS "${CMAKE_C_FLAGS} -msse3" -DGGML_AVX=OFF -DGGML_AVX2=OFF -DGGML_FMA=OFF -DSD_BUILD_SHARED_LIBS=ON -DGGML_OPENBLAS=ON -DGGML_CLBLAST=ON -DCLBLAST_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\include -DCLBLAST_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\lib\clblast.lib -DOPENCL_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\include -DOPENCL_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\lib\OpenCL.lib -DOPENBLAS_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\openBlas\include -DOPENBLAS_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\openBlas\lib\libopenblas.lib'
+          - build: 'noavx-sse3-opencl-and-clblast'
+            defines: 'DCMAKE_C_FLAGS "${CMAKE_C_FLAGS} -msse3" -DGGML_AVX=OFF -DGGML_AVX2=OFF -DGGML_FMA=OFF -DSD_BUILD_SHARED_LIBS=ON -DGGML_CLBLAST=ON -DCLBLAST_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\include -DCLBLAST_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\lib\clblast.lib -DOPENCL_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\include -DOPENCL_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\lib\OpenCL.lib'
+
           - build: 'avx2-opencl-clblast'
             defines: '-DGGML_AVX2=ON -DSD_BUILD_SHARED_LIBS=ON -DGGML_CLBLAST=ON -DCLBLAST_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\include -DCLBLAST_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\clblast\lib\clblast.lib -DOPENCL_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\include -DOPENCL_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\OpenCL\lib\OpenCL.lib -DOPENBLAS_INC=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\openBlas\include -DOPENBLAS_LIB=D:\a\stable-diffusion.cpp\stable-diffusion.cpp\openBlas\lib\libopenblas.lib'
           - build: 'avx-opencl-clblast'
@@ -208,7 +213,7 @@ jobs:
 
       - name: Check AVX512F support
         id: check_avx512f
-        if: ${{ matrix.build == 'avx512' }}
+        if: ${{ contains(matrix.build,'avx512') }}
         continue-on-error: true
         run: |
           cd build
@@ -219,6 +224,20 @@ jobs:
           & $cl /O2 /GS- /kernel avx512f.c /link /nodefaultlib /entry:main
           .\avx512f.exe && echo "AVX512F: YES" && ( echo HAS_AVX512F=1 >> $env:GITHUB_ENV ) || echo "AVX512F: NO"
 
+      - name: Check SSE3 support
+        id: check_sse3
+        if: ${{ contains(matrix.build,'sse3') }}
+        continue-on-error: true
+        run: |
+          cd build
+          $vcdir = $(vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath)
+          $msvc = $(join-path $vcdir $('VC\Tools\MSVC\'+$(gc -raw $(join-path $vcdir 'VC\Auxiliary\Build\Microsoft.VCToolsVersion.default.txt')).Trim()))
+          $cl =  $(join-path $msvc 'bin\Hostx64\x64\cl.exe')
+          echo 'int main(void){unsigned int a[4];__cpuid(a,1);return !(a[2]&(1 << 0);}' >> tmmintrin.c
+          & $cl /O2 /GS- /kernel tmmintrin.c /link /nodefaultlib /entry:main
+          .\tmmintrin.exe && echo "SSE3: YES" && ( echo HAS_SSE3=1 >> $env:GITHUB_ENV ) || echo "SSE3: NO"
+
+        
       - name: Get commit hash
         id: commit
         if: ${{ ( github.event_name == 'push' && github.ref == 'refs/heads/master' ) || github.event.inputs.create_release == 'true' }}
