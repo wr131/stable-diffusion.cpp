@@ -20,7 +20,7 @@ env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
   
 
-jobs:
+job:
   windows-latest-cmake:
     runs-on: windows-latest
     # https://github.com/leejet/stable-diffusion.cpp/issues/52 ggml error when using "--schedule kerras" with clblast #52
