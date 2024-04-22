@@ -270,7 +270,7 @@ jobs:
 
       - name: Copy and pack Cuda runtime
         id: pack_cuda_runtime
-        if: ${{ ( github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.build == 'cuda12' ) || github.event.inputs.create_release == 'true' }}
+        if: ${{ ( github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.build == 'cuda12' ) || github.event.inputs.create_release == 'true' && matrix,build == 'cuda12'}}
         run: |
           echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
           $dst='.\build\bin\cudart\'
