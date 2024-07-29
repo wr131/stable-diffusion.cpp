@@ -1,6 +1,7 @@
 <p align="center">
   <img src="./assets/cat_with_sd_cpp_42.png" width="360x">
 </p>
+
 # stable-diffusion.cpp has not add the support for OpenCL
 # DO NOT USE THIS FORK, I JUST CHANGE THE BUILD SETTINGS OF SD.CPP AND GGML, I AM JUST A NEWBIE. I AM NOT A PROFESSOR OF PROGRAMING.
 
